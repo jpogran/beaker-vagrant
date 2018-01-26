@@ -42,7 +42,7 @@ module Beaker
         host.name.tr!('_','-') # Rewrite Hostname with hyphens instead of underscores to get legal hostname
         host['ip'] ||= randip #use the existing ip, otherwise default to a random ip
         v_file << "  c.vm.define '#{host.name}' do |v|\n"
-        v_file << "    v.vm.hostname = '#{host.name}'\n"
+        v_file << "    v.vm.hostname = '#{host.name}'\n" unless !host['box_rewrite_hostname'].nil?
         v_file << "    v.vm.box = '#{host['box']}'\n"
         v_file << "    v.vm.box_url = '#{host['box_url']}'\n" unless host['box_url'].nil?
         v_file << "    v.vm.box_version = '#{host['box_version']}'\n" unless host['box_version'].nil?
@@ -199,8 +199,8 @@ module Beaker
         end
 
         make_vfile @hosts, @options
-
-        vagrant_cmd("up#{" --provider #{provider}" if provider}")
+        
+        vagrant_cmd("up --debug#{" --provider #{provider}" if provider}")
       else #set host ip of already up boxes
         @hosts.each do |host|
           host[:ip] = get_ip_from_vagrant_file(host.name)

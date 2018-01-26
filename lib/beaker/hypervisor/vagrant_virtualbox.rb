@@ -59,6 +59,8 @@ class Beaker::VagrantVirtualbox < Beaker::Vagrant
 
     provider_section << "      vb.gui = true\n" unless host['vb_gui'].nil?
 
+    provider_section << "      vb.linked_clone = true if Vagrant::VERSION =~ /^1.8/\n"
+
     provider_section << "      [\"modifyvm\", :id, \"--cpuidset\", \"1\",\"000206a7\",\"02100800\",\"1fbae3bf\",\"bfebfbff\"\]" if /osx/i.match(host['platform'])
 
     if host['disk_path']
